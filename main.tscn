@@ -1,0 +1,107 @@
+[gd_scene load_steps=14 format=3 uid="uid://dabih84n8ugqw"]
+
+[ext_resource type="Script" uid="uid://clyn43h0i3k4g" path="res://player.gd" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://cotiqw44o23c3" path="res://cam_pivot.gd" id="2_0xm2m"]
+[ext_resource type="Script" uid="uid://ceuhh13q1ad7s" path="res://hitbox_maker.gd" id="3_h2yge"]
+[ext_resource type="Script" uid="uid://bs22dnrbpmnu8" path="res://enemy.gd" id="4_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://bv70mfmja1pjf" path="res://coin.tscn" id="5_7mycd"]
+[ext_resource type="Script" uid="uid://clvle5ix5y5dh" path="res://hurtbox.gd" id="5_lquwl"]
+[ext_resource type="Script" uid="uid://cp5lp1y45x0ex" path="res://canvas_layer.gd" id="7_272bh"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7dm0k"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_ig7tw"]
+sky_material = SubResource("ProceduralSkyMaterial_7dm0k")
+
+[sub_resource type="Environment" id="Environment_0xm2m"]
+background_mode = 2
+sky = SubResource("Sky_ig7tw")
+tonemap_mode = 2
+
+[sub_resource type="BoxMesh" id="BoxMesh_h2yge"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ig7tw"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7mycd"]
+
+[node name="Main" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_0xm2m")
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]
+size = Vector3(30, 1, 30)
+
+[node name="Player" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0333014, 0)
+script = ExtResource("1_ig7tw")
+
+[node name="Character" type="Node3D" parent="Player"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player/Character"]
+transform = Transform3D(1, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_h2yge")
+
+[node name="CamPivot" type="Node3D" parent="Player"]
+script = ExtResource("2_0xm2m")
+
+[node name="Camera3D" type="Camera3D" parent="Player/CamPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.253806, 5.4641)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("BoxShape3D_ig7tw")
+
+[node name="Scripts" type="Node" parent="Player"]
+
+[node name="HitboxMaker" type="Node" parent="Player/Scripts"]
+script = ExtResource("3_h2yge")
+
+[node name="Hurtbox" type="Area3D" parent="Player" node_paths=PackedStringArray("holder")]
+script = ExtResource("5_lquwl")
+holder = NodePath("..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player/Hurtbox"]
+transform = Transform3D(1, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("BoxShape3D_7mycd")
+
+[node name="Enemy" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0333014, -4.730906)
+script = ExtResource("4_1bvp3")
+
+[node name="Character" type="Node3D" parent="Enemy"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Enemy/Character"]
+transform = Transform3D(1, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_h2yge")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Enemy"]
+transform = Transform3D(1, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("BoxShape3D_ig7tw")
+
+[node name="Hurtbox" type="Area3D" parent="Enemy" node_paths=PackedStringArray("holder")]
+script = ExtResource("5_lquwl")
+holder = NodePath("..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Enemy/Hurtbox"]
+transform = Transform3D(1, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("BoxShape3D_7mycd")
+
+[node name="GameStuff" type="Node3D" parent="."]
+
+[node name="Coin" parent="." instance=ExtResource("5_7mycd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.1639395, 2.6968753, 0)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+script = ExtResource("7_272bh")
+
+[node name="Coins" type="Label" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 100
+text = "Coins: 1"
