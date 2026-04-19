@@ -2,13 +2,15 @@ extends CharacterBody3D
 
 var direction : Vector3
 var input_dir : Vector2
-const SPEED = 13.0
+const SPEED = 5.0
 const SSPEED = 10.0
 const JUMP_VELOCITY = 9
 
 @onready var camPiv = $CamPivot
 @onready var model = $Character
 @onready var mesh: MeshInstance3D = $Character/MeshInstance3D
+
+@onready var player: CharacterBody3D = $"../../Player"
 
 
 var dt : float
@@ -27,6 +29,7 @@ var state = States.MOVE
 
 const COIN = preload("uid://bv70mfmja1pjf")
 
+var toPlr : Vector3
 
 func flatten(vector: Vector3) -> Vector3:
 	return Vector3( vector.x, 0, vector.z)
@@ -43,13 +46,17 @@ func move() -> void:
 
 func _physics_process(delta: float) -> void:
 	dt = delta
-	# Add the gravity.
+	
+	toPlr = player.position - position
+	
+	
+
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 
 	input_dir = Input.get_vector("Left", "Right", "Up", "Down")
 	#direction = flatten($CamPivot.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	direction = Vector3(0,0,0)
+	direction = flatten(toPlr.normalized())
 	move()
 	move_and_slide()
 	
@@ -69,5 +76,5 @@ func isDead() -> void:
 
 func spawnCoin() -> void:
 	var new : Area3D = COIN.instantiate()
-	$"../GameStuff".add_child(new)
+	$"../../GameStuff".add_child(new)
 	new.position = position

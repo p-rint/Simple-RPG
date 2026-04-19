@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://b348khaicgr8y"]
+
+[ext_resource type="PackedScene" uid="uid://bp0pkrnijde43" path="res://player.tscn" id="1_hfkix"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_hfkix"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_metfq"]
+sky_material = SubResource("ProceduralSkyMaterial_hfkix")
+
+[sub_resource type="Environment" id="Environment_6syyc"]
+background_mode = 2
+sky = SubResource("Sky_metfq")
+tonemap_mode = 2
+
+[node name="House" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_6syyc")
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]
+size = Vector3(30, 1, 30)
+
+[node name="Player" parent="." instance=ExtResource("1_hfkix")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 7)

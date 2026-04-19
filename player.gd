@@ -54,6 +54,10 @@ func _physics_process(delta: float) -> void:
 
 	if Input.is_action_just_pressed("Attack") and is_on_floor():
 		hitbox_maker.spawnHitbox()
+		
+	if Input.is_action_just_pressed("House") and is_on_floor():
+		enterHouse()
+	
 	input_dir = Input.get_vector("Left", "Right", "Up", "Down")
 	direction = flatten($CamPivot.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	
@@ -62,3 +66,11 @@ func _physics_process(delta: float) -> void:
 	
 func jump() -> void:
 	velocity.y = JUMP_VELOCITY
+
+
+
+func enterHouse() -> void:
+	
+	get_tree().change_scene_to_file("res://house.tscn")
+	
+	

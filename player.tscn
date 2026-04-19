@@ -1,0 +1,54 @@
+[gd_scene load_steps=9 format=3 uid="uid://bp0pkrnijde43"]
+
+[ext_resource type="Script" uid="uid://clyn43h0i3k4g" path="res://player.gd" id="1_sweqy"]
+[ext_resource type="Script" uid="uid://cotiqw44o23c3" path="res://cam_pivot.gd" id="2_2hs0m"]
+[ext_resource type="Script" uid="uid://ceuhh13q1ad7s" path="res://hitbox_maker.gd" id="3_1jxqw"]
+[ext_resource type="Script" uid="uid://clvle5ix5y5dh" path="res://hurtbox.gd" id="4_dw050"]
+[ext_resource type="Script" uid="uid://cp5lp1y45x0ex" path="res://canvas_layer.gd" id="5_b26j0"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_h2yge"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ig7tw"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7mycd"]
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_sweqy")
+
+[node name="Character" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Character"]
+transform = Transform3D(1, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_h2yge")
+
+[node name="CamPivot" type="Node3D" parent="."]
+script = ExtResource("2_2hs0m")
+
+[node name="Camera3D" type="Camera3D" parent="CamPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.253806, 5.4641)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("BoxShape3D_ig7tw")
+
+[node name="Scripts" type="Node" parent="."]
+
+[node name="HitboxMaker" type="Node" parent="Scripts"]
+script = ExtResource("3_1jxqw")
+
+[node name="Hurtbox" type="Area3D" parent="." node_paths=PackedStringArray("holder")]
+script = ExtResource("4_dw050")
+holder = NodePath("..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox"]
+transform = Transform3D(1, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("BoxShape3D_7mycd")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+script = ExtResource("5_b26j0")
+
+[node name="Coins" type="Label" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 100
+text = "Coins: 1"

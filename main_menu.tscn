@@ -1,0 +1,64 @@
+[gd_scene load_steps=6 format=3 uid="uid://dwn6vbrmca2o8"]
+
+[ext_resource type="ArrayMesh" uid="uid://c8hqkl5j33gpb" path="res://Simple Map.obj" id="1_06t4h"]
+[ext_resource type="Script" uid="uid://cqowa2o7td4bw" path="res://main_menu.gd" id="1_7vrkn"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_06t4h"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_7vrkn"]
+sky_material = SubResource("ProceduralSkyMaterial_06t4h")
+
+[sub_resource type="Environment" id="Environment_fu7sn"]
+background_mode = 2
+sky = SubResource("Sky_7vrkn")
+tonemap_mode = 2
+
+[node name="Main Menu" type="Node3D"]
+script = ExtResource("1_7vrkn")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_fu7sn")
+
+[node name="Map" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -7, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Map"]
+mesh = ExtResource("1_06t4h")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.0146593135, -0.2799669, 0.95989776, 0, 0.9600009, 0.27999696, -0.9998926, -0.0041045635, 0.014072954, 158.45958, 48.43121, 2.4155774)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+follow_viewport_enabled = true
+
+[node name="StartButton" type="Button" parent="CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = 203.0
+offset_right = 300.0
+offset_bottom = 324.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_force_pass_scroll_events = false
+text = "START"
+
+[node name="Title" type="Label" parent="CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -291.0
+offset_top = -318.0
+offset_right = 291.0
+offset_bottom = -261.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 41
+text = "Possibly the best RPG ever?!?!"

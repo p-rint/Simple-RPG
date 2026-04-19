@@ -1,6 +1,6 @@
-extends Area3D
+extends Node
 
-@export var holder : CharacterBody3D
+var PlayerCoins = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -10,11 +10,3 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
-
-
-func damage(dmg : int):
-	holder.health -= dmg
-
-
-func getCoin():
-	GlobalData.PlayerCoins += 1

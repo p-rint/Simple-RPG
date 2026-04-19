@@ -1,6 +1,6 @@
 extends CanvasLayer
 
-@onready var player: CharacterBody3D = $"../Player"
+@onready var player: CharacterBody3D = $".."
 
 
 # Called when the node enters the scene tree for the first time.
@@ -10,4 +10,5 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	$Coins.text = "Coins: " + str(player.coins)
+	$Coins.text = "Coins: " + str(GlobalData.PlayerCoins)
+	
