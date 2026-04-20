@@ -71,6 +71,9 @@ func jump() -> void:
 
 func enterHouse() -> void:
 	
-	get_tree().change_scene_to_file("res://house.tscn")
+	if GlobalData.inHouse == false:
+		get_tree().change_scene_to_file("res://house.tscn")
+	else:
+		get_tree().change_scene_to_file("res://main.tscn")
 	
-	
+	GlobalData.inHouse = not GlobalData.inHouse

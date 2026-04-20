@@ -51,4 +51,3 @@ script = ExtResource("5_b26j0")
 offset_right = 40.0
 offset_bottom = 23.0
 theme_override_font_sizes/font_size = 100
-text = "Coins: 1"

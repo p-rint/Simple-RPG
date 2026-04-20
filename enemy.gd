@@ -31,6 +31,8 @@ const COIN = preload("uid://bv70mfmja1pjf")
 
 var toPlr : Vector3
 
+var canMove = false
+
 func flatten(vector: Vector3) -> Vector3:
 	return Vector3( vector.x, 0, vector.z)
 
@@ -49,7 +51,8 @@ func _physics_process(delta: float) -> void:
 	
 	toPlr = player.position - position
 	
-	
+	if not canMove:
+		canMove = (toPlr.length() < 19)
 
 	if not is_on_floor():
 		velocity += get_gravity() * delta
@@ -57,7 +60,9 @@ func _physics_process(delta: float) -> void:
 	input_dir = Input.get_vector("Left", "Right", "Up", "Down")
 	#direction = flatten($CamPivot.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	direction = flatten(toPlr.normalized())
-	move()
+	
+	if canMove == true:
+		move()
 	move_and_slide()
 	
 	isDead()

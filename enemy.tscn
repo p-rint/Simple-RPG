@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=3 uid="uid://3kcu5rdfotc0"]
+
+[ext_resource type="Script" uid="uid://bs22dnrbpmnu8" path="res://enemy.gd" id="1_4gyqm"]
+[ext_resource type="Script" uid="uid://clvle5ix5y5dh" path="res://hurtbox.gd" id="2_qi2p4"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_h2yge"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ig7tw"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7mycd"]
+
+[node name="Enemy" type="CharacterBody3D"]
+script = ExtResource("1_4gyqm")
+
+[node name="Character" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Character"]
+transform = Transform3D(1, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_h2yge")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("BoxShape3D_ig7tw")
+
+[node name="Hurtbox" type="Area3D" parent="." node_paths=PackedStringArray("holder")]
+script = ExtResource("2_qi2p4")
+holder = NodePath("..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox"]
+transform = Transform3D(1, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("BoxShape3D_7mycd")

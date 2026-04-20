@@ -1,6 +1,7 @@
 extends Node
 
-var PlayerCoins = 0
+var PlayerCoins := 0
+var inHouse := false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
