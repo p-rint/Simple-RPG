@@ -33,6 +33,9 @@ var toPlr : Vector3
 
 var canMove = false
 
+@onready var animTree: AnimationTree = $AnimationTree
+
+
 func flatten(vector: Vector3) -> Vector3:
 	return Vector3( vector.x, 0, vector.z)
 
@@ -45,11 +48,12 @@ func move() -> void:
 	else:
 		if is_on_floor():
 			velocity = lerp(velocity, Vector3.ZERO + Vector3(0,velocity.y,0), 8 * dt)
-
+	animTree.set("parameters/Run/blend_position", flatten(velocity).length()/SPEED)
+	
 func _physics_process(delta: float) -> void:
 	dt = delta
 	
-	toPlr = player.position - position
+	toPlr =  position - player.position
 	
 	if not canMove:
 		canMove = (toPlr.length() < 19)

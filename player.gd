@@ -17,6 +17,8 @@ var targetRot = 0
 @export var coins : int = 0
 
 @onready var animPlr: AnimationPlayer = $AnimationPlayer
+@onready var animTree: AnimationTree = $AnimationTree
+
 
 var camForw : Vector3
 
@@ -40,7 +42,9 @@ func move() -> void:
 	else:
 		if is_on_floor():
 			velocity = lerp(velocity, Vector3.ZERO + Vector3(0,velocity.y,0), 8 * dt)
-
+	animTree.set("parameters/Run/blend_position", flatten(velocity).length()/SPEED)
+	
+	
 func _physics_process(delta: float) -> void:
 	dt = delta
 	camForw = flatten($CamPivot.basis.z)
@@ -53,7 +57,9 @@ func _physics_process(delta: float) -> void:
 		jump()
 
 	if Input.is_action_just_pressed("Attack") and is_on_floor():
+		animTree.set("parameters/Punch/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 		hitbox_maker.spawnHitbox()
+		
 		
 	if Input.is_action_just_pressed("House") and is_on_floor():
 		enterHouse()
