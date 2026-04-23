@@ -15,7 +15,7 @@ const JUMP_VELOCITY = 9
 
 var dt : float
 var targetRot = 0
-@export var health = 5
+@export var health = randf_range(3,5)
 @export var score : int = 0
 
 
@@ -87,3 +87,6 @@ func spawnCoin() -> void:
 	var new : Area3D = COIN.instantiate()
 	$"../../GameStuff".add_child(new)
 	new.position = position
+
+func knockBack() -> void:
+	velocity = flatten(toPlr).normalized() * 30

@@ -1,7 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://dabih84n8ugqw"]
+[gd_scene load_steps=14 format=3 uid="uid://dabih84n8ugqw"]
 
 [ext_resource type="PackedScene" uid="uid://bp0pkrnijde43" path="res://player.tscn" id="1_1bvp3"]
 [ext_resource type="ArrayMesh" uid="uid://c8hqkl5j33gpb" path="res://Simple Map.obj" id="1_lquwl"]
+[ext_resource type="Script" uid="uid://c3mqshhgf68ub" path="res://warpArea.gd" id="3_lquwl"]
 [ext_resource type="Script" uid="uid://bmuewxu5bcqb2" path="res://enemies.gd" id="4_lquwl"]
 [ext_resource type="PackedScene" uid="uid://3kcu5rdfotc0" path="res://enemy.tscn" id="5_272bh"]
 
@@ -19,8 +20,15 @@ sky_material = SubResource("ProceduralSkyMaterial_7dm0k")
 background_mode = 2
 sky = SubResource("Sky_ig7tw")
 tonemap_mode = 2
+glow_enabled = true
 
 [sub_resource type="BoxMesh" id="BoxMesh_272bh"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1bvp3"]
+albedo_color = Color(3.008172e-06, 0.6494987, 0.09459185, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lquwl"]
+albedo_color = Color(0, 0, 0, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5vw27"]
 
@@ -55,13 +63,33 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0333014, 0)
 wait_time = 0.4
 autostart = true
 
-[node name="House" type="StaticBody3D" parent="."]
-transform = Transform3D(5.656854, 0, -5.656854, 0, 8, 0, 5.656854, 0, 5.656854, 10.887257, 2.9912395, -11)
+[node name="WarpPipe" type="StaticBody3D" parent="."]
+transform = Transform3D(6.928202, 0, -3.9999995, 1.035276, 7.7274065, 1.7931507, 3.8637028, -2.0705523, 6.692129, 10.887257, -3.0087605, -11)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="House"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WarpPipe"]
+transform = Transform3D(0.9999999, 0, 5.9604645e-08, -7.450581e-09, 1, -2.9802322e-08, 2.9802322e-08, 0, 1.6999998, 5.9604645e-08, -2.9802322e-08, -0.5000001)
 mesh = SubResource("BoxMesh_272bh")
+surface_material_override/0 = SubResource("StandardMaterial3D_1bvp3")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="House"]
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="WarpPipe"]
+transform = Transform3D(1.1999997, 0, 0, 0, 1.2, 0, 0, 0, 0.2999999, 0, 0, 0.375)
+mesh = SubResource("BoxMesh_272bh")
+surface_material_override/0 = SubResource("StandardMaterial3D_1bvp3")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="WarpPipe"]
+transform = Transform3D(0.9599996, 0, 0, 0, 0.96000004, 0, 0, 0, 0.29999983, 0, 0, 0.376)
+mesh = SubResource("BoxMesh_272bh")
+surface_material_override/0 = SubResource("StandardMaterial3D_lquwl")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WarpPipe"]
+transform = Transform3D(1.0000002, 0, 2.1457672e-06, -4.8428774e-07, 1, -6.735325e-06, 5.066395e-07, 0, 0.99999875, 1.1920929e-07, -2.0861626e-07, -0.40043938)
+shape = SubResource("BoxShape3D_5vw27")
+
+[node name="Area3D" type="Area3D" parent="WarpPipe"]
+script = ExtResource("3_lquwl")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WarpPipe/Area3D"]
+transform = Transform3D(1.0129412, -8.940697e-08, -2.9802322e-08, -2.3841858e-07, 1.0965927, -1.3411045e-07, 6.556511e-07, -4.4703484e-08, 1.0224128, 0.060370386, -0.032352924, 0.25368488)
 shape = SubResource("BoxShape3D_5vw27")
 
 [node name="Enemies" type="Node3D" parent="."]
@@ -71,3 +99,5 @@ script = ExtResource("4_lquwl")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0333014, -4.730906)
 
 [connection signal="timeout" from="GameStuff/Timers/Spawn" to="Enemies" method="_on_spawn_timeout"]
+[connection signal="area_entered" from="WarpPipe/Area3D" to="Player" method="_on_area_3d_area_entered"]
+[connection signal="area_exited" from="WarpPipe/Area3D" to="Player" method="_on_area_3d_area_exited"]

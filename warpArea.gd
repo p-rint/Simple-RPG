@@ -1,9 +1,5 @@
-extends Node
+extends Area3D
 
-var PlayerCoins := 0
-var PlayerDamage := 1
-var SPEED := 13.0
-var inHouse := false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

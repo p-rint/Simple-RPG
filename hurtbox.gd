@@ -14,6 +14,8 @@ func _process(delta: float) -> void:
 
 func damage(dmg : int):
 	holder.health -= dmg
+	if holder.has_method("knockBack"):
+		holder.knockBack()
 
 
 func getCoin():
