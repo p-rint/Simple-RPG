@@ -2,25 +2,38 @@ extends Area3D
 
 var foundAreas = []
 
+@onready var player : CharacterBody3D = $"../Player"
+var attackFunction : Callable = print
+
+var speed = -40
+var direction = Vector3(0,0,0)
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	area_entered.connect(_on_area_entered)
 	$Lifetime.timeout.connect(queue_free)
 	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	pass
+	position += direction * speed * delta
 
-func _on_area_entered(area: Area3D) -> void:
-	for i : int in foundAreas.size():
-		if is_instance_valid(foundAreas[i]):
+func _on_area_entered(area: Area3D) -> void: #You can make it so if the name starts with P, it's a player and E if enemy. Alsoa substring that takes out the 1st letter returns just "Hurtbox"
+	#print(area.name == "Hurtbox")
+	var sameParent = get_parent() == player
+	if area.name == "Hurtbox" and not sameParent:
+		#print("A")
+		for i : int in foundAreas.size():
+			
 			if area == foundAreas[i]:
-				
 				return
-	
-	#if not hit already:
-	if not area.is_queued_for_deletion():
-	
+		
+		#if not hit already:
+		print("Found " + area.get_parent().get_parent().name)
+		
+		var enemy = area.get_parent().get_parent()
+		attackFunction.call(player, enemy)
 		if area.has_method("damage"):
-			area.damage(GlobalData.PlayerDamage)
-		foundAreas.append(area)
+			#Damage
+			
+			foundAreas.append(area)

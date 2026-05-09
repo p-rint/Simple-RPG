@@ -2,9 +2,8 @@ extends CharacterBody3D
 
 var direction : Vector3
 var input_dir : Vector2
-const SPEED = 5.0
-const SSPEED = 10.0
-const JUMP_VELOCITY = 9
+var SPEED = 8.0
+const JUMP_VELOCITY = 5
 
 @onready var camPiv = $CamPivot
 @onready var model = $Character
@@ -12,81 +11,99 @@ const JUMP_VELOCITY = 9
 
 @onready var player: CharacterBody3D = $"../../Player"
 
+@onready var stunTimer: Timer = $Timers/Stun
+
 
 var dt : float
 var targetRot = 0
-@export var health = randf_range(3,5)
-@export var score : int = 0
+@onready var health = 10
 
+enum STATES {IDLE, MOVE, JUMP, FALL, STUNNED}
 
-var camForw : Vector3
-
-enum States {IDLE, MOVE, FALLING, STOMPING}
-
-var state = States.MOVE
-
-@onready var hitbox_maker: Node = $Scripts/HitboxMaker
-
-const COIN = preload("uid://bv70mfmja1pjf")
-
-var toPlr : Vector3
-
-var canMove = false
-
-@onready var animTree: AnimationTree = $AnimationTree
+var state = STATES.IDLE
 
 
 func flatten(vector: Vector3) -> Vector3:
 	return Vector3( vector.x, 0, vector.z)
 
 func move() -> void:
-	model.rotation.y = lerp_angle(model.rotation.y, targetRot, .5)
-	if direction:
+	var toPlr := (player.position - position)
+	direction = flatten(toPlr).normalized()
+	model.rotation.y = lerp_angle(model.rotation.y, targetRot, dt * 12)
+	
+	if direction and state != STATES.STUNNED:
 		velocity.x = lerp(velocity.x, direction.x * SPEED, dt * 8)
 		velocity.z = lerp(velocity.z, direction.z * SPEED, dt * 8)
 		targetRot = atan2(-direction.x, -direction.z)
 	else:
 		if is_on_floor():
 			velocity = lerp(velocity, Vector3.ZERO + Vector3(0,velocity.y,0), 8 * dt)
-	animTree.set("parameters/Run/blend_position", flatten(velocity).length()/SPEED)
 	
+
 func _physics_process(delta: float) -> void:
 	dt = delta
-	
-	toPlr =  position - player.position
-	
-	if not canMove:
-		canMove = (toPlr.length() < 19)
-
-	if not is_on_floor():
-		velocity += get_gravity() * delta
-
-	input_dir = Input.get_vector("Left", "Right", "Up", "Down")
-	#direction = flatten($CamPivot.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-	direction = flatten(toPlr.normalized())
-	
-	if canMove == true:
-		move()
+	addGravity()
+	checkStates()
 	move_and_slide()
+	checkLife()
 	
-	isDead()
 	
 	
+	
+func addGravity() -> void:
+	if not is_on_floor():
+		velocity += get_gravity() * dt
 	
 func jump() -> void:
 	velocity.y = JUMP_VELOCITY
 
 
-func isDead() -> void:
+func checkLife() -> void:
+	if position.y < -15:
+		queue_free()
 	if health <= 0:
-		spawnCoin()
+		player.score += 1
 		queue_free()
 
+func dealDamage(dmg : int) -> void:
+	health -= dmg
 
-func spawnCoin() -> void:
-	var new : Area3D = COIN.instantiate()
-	$"../../GameStuff".add_child(new)
-	new.position = position
+func damage(dmg : int, stunTime : float) -> void:
+	health -= dmg
+	state = STATES.STUNNED
+	stunTimer.start(stunTime)
 
-func knockBack() -> void:
-	velocity = flatten(toPlr).normalized() * 30
+
+func checkStates() -> void:
+	
+	match state:
+		
+		STATES.IDLE:
+			if flatten(velocity).length() > 1:
+				state = STATES.MOVE
+			if not is_on_floor():
+				state = STATES.FALL
+
+		STATES.MOVE:
+			if flatten(velocity).length() < 2:
+				state = STATES.IDLE
+				
+			if not is_on_floor():
+				state = STATES.FALL
+		STATES.JUMP:
+			if velocity.y <= 0:
+				state = STATES.FALL
+
+		STATES.FALL:
+			if is_on_floor():
+				state = STATES.MOVE
+		
+		STATES.STUNNED:
+			if stunTimer.time_left == 0:
+				if is_on_floor():
+					state = STATES.MOVE
+				else: state = STATES.FALL
+
+		
+	move()
+	#print(state)
